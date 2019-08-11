@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Printers from "./components/Printers";
+import CreatePrinter from "./components/CreatePrinter";
 
 
 function App() {
@@ -14,8 +15,9 @@ function App() {
 
 
     return [
-        <Header name="Sara" />,
-        <Title name="Cahal" />,
+        <Header />,
+        <Title />,
+        <CreatePrinter />,
         <Printers />
     ];
 }
