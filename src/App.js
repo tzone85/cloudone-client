@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
-import * as ReactDOM from "react-dom";
-import PrintersTable from "./components/PrintersTable";
+import Printers from "./components/Printers";
 
 
 function App() {
@@ -17,7 +16,7 @@ function App() {
     return [
         <Header name="Sara" />,
         <Title name="Cahal" />,
-        <PrintersTable data={this.props.printers} />
+        <Printers />
     ];
 }
 

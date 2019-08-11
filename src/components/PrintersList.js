@@ -1,6 +1,6 @@
 import * as React from "react";
 
-class PrintersTable extends React.Component {
+class PrintersList extends React.Component {
     render() {
         return <table className="table">
                 <thead className="thead-dark">
@@ -25,4 +25,4 @@ class PrintersTable extends React.Component {
     }
 }
 
-export default PrintersTable;
+export default PrintersList;
