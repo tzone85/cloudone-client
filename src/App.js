@@ -1,26 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import * as ReactDOM from "react-dom";
+import PrintersTable from "./components/PrintersTable";
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    function Header(props) {
+        return <div className="row"></div>;
+    }
+    function Title(props) {
+        return <div className="row"><h1>Printers Table</h1></div>;
+    }
+
+
+    return [
+        <Header name="Sara" />,
+        <Title name="Cahal" />,
+        <PrintersTable data={this.props.printers} />
+    ];
 }
 
 export default App;
