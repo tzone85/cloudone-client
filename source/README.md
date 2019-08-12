@@ -1,4 +1,11 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Live Link
+http://ec2-54-251-169-51.ap-southeast-1.compute.amazonaws.com/
+
+### Node version
+v10.15.3
+
+### npm i
 
 ## Available Scripts
 
