@@ -2,11 +2,14 @@ import Printer from './Printer'
 import React, {Component} from "react";
 import PubSub from 'pubsub-js';
 import CreatePrinter from "./CreatePrinter";
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 class Printers extends Component {
     printersSubscriber = function (msg, data) {
         setTimeout(() => {
-            fetch('http://localhost:3000/printers', {
+            fetch('http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com/printers', {
                 method: 'GET',
                 // mode: 'no-cors'
             })

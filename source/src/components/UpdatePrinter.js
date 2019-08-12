@@ -2,6 +2,9 @@ import React from 'react'
 import createReactClass from 'create-react-class';
 
 import LinkedStateMixin from 'react-addons-linked-state-mixin'; // ES6
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const UpdatePrinter = createReactClass({
 
@@ -37,7 +40,7 @@ const UpdatePrinter = createReactClass({
             printer_ip: this.state.printerIp,
             status: this.state.status
         };
-        fetch(`http://localhost:3000/printers/${this.props.printerId}`, {
+        fetch(`http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com/printers/${this.props.printerId}`, {
             body: JSON.stringify(json),
             method: 'PUT',
             headers

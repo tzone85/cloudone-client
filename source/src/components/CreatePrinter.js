@@ -40,7 +40,7 @@ const CreatePrinter = createReactClass({
             printer_ip: this.state.printerIp,
             status: this.state.status
         };
-        fetch(`http://localhost:3000/printers`, {
+        fetch(`http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com/printers`, {
             body: JSON.stringify(json),
             method: 'POST',
             headers

@@ -1,0 +1,28 @@
+version: "3.5"
+
+services:
+  node:
+      build:
+        context: .
+        dockerfile: Dockerfile-node
+      environment:
+        - API_URL=http://docker.for.mac.localhost:3000
+      networks:
+        - conet
+
+  web:
+      build:
+        context: .
+        dockerfile: Dockerfile-nginx
+      ports:
+        - 8008:80
+        - 443:443
+      expose:
+        - 443
+        - 80
+      networks:
+        - conet
+
+networks:
+  conet:
+    external: false

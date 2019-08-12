@@ -1,0 +1,28 @@
+version: "3.5"
+
+services:
+  node:
+      image: tzone85/cloudone-client:node
+      restart: always
+        environment:
+          - API_URL=http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com
+      networks:
+        - cocnet
+      environment:
+
+
+  web:
+      image: tzone85/cloudone-client:nginx
+      restart: always
+      ports:
+        - 80:80
+        - 443:443
+      expose:
+        - 443
+        - 80
+      networks:
+        - cocnet
+
+networks:
+  cocnet:
+    external: false

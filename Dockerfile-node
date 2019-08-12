@@ -1,0 +1,13 @@
+FROM node
+
+RUN npm install -g serve
+
+RUN mkdir -p /usr/src/app/
+
+WORKDIR /usr/src/app/
+
+COPY ./source/ .
+
+RUN npm i && npm run build
+
+CMD serve -s build

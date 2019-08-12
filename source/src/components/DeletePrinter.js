@@ -1,5 +1,8 @@
 import React from 'react'
 import createReactClass from 'create-react-class';
+import dotenv from 'dotenv'
+
+dotenv.config();
 
 const DeletePrinter = createReactClass({
 
@@ -7,7 +10,7 @@ const DeletePrinter = createReactClass({
         const headers = new Headers();
         headers.set('Accept', 'application/json');
         headers.set('Content-Type', 'application/json');
-        fetch(`http://localhost:3000/printers/${this.props.printerId}`, {
+        fetch(`http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com/printers/${this.props.printerId}`, {
             method: 'DELETE',
             headers
         }).then(response => {
