@@ -1,36 +1,46 @@
 import Printer from './Printer'
 import React, {Component} from "react";
+import PubSub from 'pubsub-js';
+import CreatePrinter from "./CreatePrinter";
 
 class Printers extends Component {
+    printersSubscriber = function (msg, data) {
+        setTimeout(() => {
+            fetch('http://localhost:3000/printers', {
+                method: 'GET',
+                // mode: 'no-cors'
+            })
+                .then((result) => {
+                    result.json()
+                        .then(res => res.map(i => {
+                            return {
+                                printerName: i.printer_name,
+                                printerIp: i.printer_ip,
+                                status: i.status,
+                                printerId: i.id,
+                            };
+                        }))
+                        .then(data => this.setState({printers: data}));
+                })
+                .catch(error => console.log('Error', error));
+        }, 500)
+    };
+
     constructor(props) {
         super(props);
         this.state = {
             printers: [],
-        }
+        };
+        PubSub.subscribe('ON_REFRESH', this.printersSubscriber.bind(this))
     };
 
     componentDidMount() {
-        fetch('http://localhost:3000/printers', {
-            method: 'GET',
-            // mode: 'no-cors'
-        })
-            .then((result) => {
-                result.json()
-                    .then(res => res.map(i => {
-                        return {
-                            printerName: i.printer_name,
-                            printerIp: i.printer_ip,
-                            status: i.status,
-                            printerId: i.id,
-                        };
-                    }))
-                    .then(data => this.setState({printers: data}));
-            })
-            .catch(error => console.log('Error', error));
+        PubSub.publish('ON_REFRESH')
     }
 
     render() {
-        return (<table className="table">
+        return [<CreatePrinter pubSub={PubSub}/>,
+            <table className="table">
                 <thead className="thead-dark">
                 <tr>
                     <th scope="col">#</th>
@@ -41,10 +51,9 @@ class Printers extends Component {
                 </tr>
                 </thead>
                 <tbody>
-                {this.state.printers.map((item) => <Printer key={item.printerId} printer={item}/>)}
+                {this.state.printers.map((item) => <Printer key={item.printerId} printer={item} pubSub={PubSub}/>)}
                 </tbody>
-            </table>
-        )
+            </table>]
     }
 }
 

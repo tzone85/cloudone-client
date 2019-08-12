@@ -45,8 +45,9 @@ const CreatePrinter = createReactClass({
             method: 'POST',
             headers
         }).then(response => {
-            console.log(response);
-            this.setState(this.getInitialState())
+            document.getElementById('dismissCreatePrinterForm').click();
+            this.setState(this.getInitialState());
+            this.props.pubSub.publish('ON_REFRESH');
         });
         event.preventDefault();
     },
@@ -86,7 +87,7 @@ const CreatePrinter = createReactClass({
                                 {/*</div>*/}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" id="dismissCreatePrinterForm" className="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit" className="btn btn-primary">Create</button>
                             </div>
                         </div>

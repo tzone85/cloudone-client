@@ -41,7 +41,10 @@ const UpdatePrinter = createReactClass({
             body: JSON.stringify(json),
             method: 'PUT',
             headers
-        }).then(response => console.log(response));
+        }).then(response => {
+            document.getElementById("dismiss_update_printer_" + this.props.printerId).click();
+            this.props.pubSub.publish('ON_REFRESH');
+        });
         event.preventDefault();
     },
 
@@ -79,7 +82,7 @@ const UpdatePrinter = createReactClass({
                             {/*</div>*/}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" id={"dismiss_update_printer_" + this.props.printerId} className="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" className="btn btn-primary">Save changes</button>
                         </div>
                     </div>

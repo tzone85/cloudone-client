@@ -5,8 +5,11 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "create-react-class": "^15.6.3",
+    "i": "^0.3.6",
     "jquery": "^3.4.1",
+    "npm": "^6.10.3",
     "popper.js": "^1.15.0",
+    "pubsub-js": "^1.7.0",
     "react": "^16.9.0",
     "react-addons-linked-state-mixin": "^15.6.2",
     "react-dom": "^16.9.0",

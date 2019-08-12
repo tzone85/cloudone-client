@@ -10,7 +10,10 @@ const DeletePrinter = createReactClass({
         fetch(`http://localhost:3000/printers/${this.props.printerId}`, {
             method: 'DELETE',
             headers
-        }).then(response => console.log(response));
+        }).then(response => {
+            document.getElementById("dismiss_delete_printer_" + this.props.printerId).click();
+            this.props.pubSub.publish('ON_REFRESH');
+        });
         event.preventDefault();
     },
 
@@ -24,7 +27,7 @@ const DeletePrinter = createReactClass({
                     <div className="model-body">Are you sure, you want to delete printer: {this.props.printerName}</div>
 
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id={"dismiss_delete_printer_" + this.props.printerId} type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" className="btn btn-danger">Confirm</button>
                     </div>
                 </div>

@@ -25,12 +25,14 @@ class Printer extends Component {
                     <UpdateButton printerId={this.props.printer.printerId}/>
                     <DeleteButton printerId={this.props.printer.printerId}/>
                     <UpdatePrinter
+                        pubSub={this.props.pubSub}
                         printerName={this.props.printer.printerName}
                         printerIp={this.props.printer.printerIp}
                         status={this.props.printer.status}
                         printerId={this.props.printer.printerId}
                     />
                     <DeletePrinter
+                        pubSub={this.props.pubSub}
                         printerName={this.props.printer.printerName}
                         printerIp={this.props.printer.printerIp}
                         status={this.props.printer.status}
