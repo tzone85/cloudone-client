@@ -1,0 +1,20 @@
+@startuml deployment
+title Deployment — nginx-served SPA + backend
+
+skinparam shadowing false
+
+node "Browser" as browser
+
+node "Cloud-One container" as web {
+  [nginx :80] as nginx
+  folder "dist/" as dist
+}
+
+node "Backend container" as api {
+  [REST /printers]
+}
+
+browser --> nginx : HTTP :80
+nginx --> dist : static
+browser --> [REST /printers] : VITE_API_BASE\n(when set; else uses bundled fixture)
+@enduml

@@ -1,162 +1,123 @@
-# CloudOne Client
+# Cloud-One Client · Printer CRUD
 
-The frontend application for the CloudOne project, built with modern JavaScript and containerized using Docker. This client application works in conjunction with the [CloudOne API](https://github.com/tzone85/cloudone.git) to deliver a complete web application experience.
+A React 18 SPA for managing printers — list, create, edit, delete — served
+behind nginx in a multi-stage Docker image.
 
-## 🚀 Project Overview
+[![CI](https://github.com/tzone85/cloudone-client/actions/workflows/ci.yml/badge.svg)](https://github.com/tzone85/cloudone-client/actions/workflows/ci.yml)
+![React 18](https://img.shields.io/badge/react-18-61dafb)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
-CloudOne Client is the user interface component of the CloudOne ecosystem, demonstrating frontend containerization best practices and Docker orchestration. The project implements:
+Modernized from the original React 16 / react-scripts 3 / `createReactClass` /
+`LinkedStateMixin` / jQuery-modal / pubsub stack. The old app pointed at a
+specific EC2 host hardcoded into the form component; the new one reads
+`VITE_API_BASE` and defaults to an in-memory mock so the SPA boots offline.
 
-* Modern JavaScript frontend application
-* Nginx server for static file serving
-* Multi-stage Docker builds for optimized production deployment
-* Development and production environment configurations
-* Seamless integration with CloudOne API
+## What changed from the original
 
-### Key Implementation Details
+| File / area (original)                              | Bug or smell                                                                                  |
+|-----------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `source/src/components/CreatePrinter.js`            | `createReactClass` + `LinkedStateMixin` (removed in React 17+).                               |
+| `source/src/components/CreatePrinter.js:46`         | `fetch('http://ec2-13-250-127-57.ap-southeast-1.compute.amazonaws.com/printers', …)` — hardcoded production URL inside the component. |
+| Modal handling                                      | `data-toggle="modal"` + jQuery to dismiss via `document.getElementById('dismissCreatePrinterForm').click()`. |
+| Refresh propagation                                 | `pubsub-js` channel `'ON_REFRESH'` shouted across unrelated components.                       |
+| `source/src/components/PrintersList.js`             | Hardcoded sample row, never wired to data.                                                    |
+| Validation                                          | None.                                                                                         |
+| Tests                                               | Only the CRA boilerplate `App.test.js`.                                                       |
 
-#### Frontend Application
-* Modern JavaScript architecture
-* Static asset optimization
-* Development mode with hot-reloading
-* Production-ready build configuration
+All replaced with: functional components, a `usePrinters` hook that owns the
+list + invalidation, a `PrintersApi` interface with mock + http impls (no
+hardcoded hosts), Bootstrap 5 (no jQuery), client-side validation, and 24
+vitest unit + 2 Playwright e2e tests.
 
-#### Nginx Configuration
-* Optimized static file serving
-* Gzip compression for improved performance
-* Cache control headers
-* HTTP/2 support in production
-* SSL configuration preparation
+## Architecture
 
-### Live Link
-http://ec2-54-251-169-51.ap-southeast-1.compute.amazonaws.com/
+### Components
 
-## 🛠️ Tech Stack
+![Component diagram](docs/architecture/component.svg)
 
-* **Frontend:** JavaScript
-* **Server:** Nginx (Latest Alpine)
-* **Containerization:** Docker & Docker Compose
-* **Environment:** Development and Production configurations
+### Sequence — create printer
 
-## System Requirements
+![Sequence](docs/architecture/sequence_crud.svg)
 
-* Node.js v10.15.3 or higher
-* Docker Engine 19.03.0+
-* Docker Compose 1.27.0+
-* Available ports 80 and 3000
+### Deployment
 
-##  Project Structure
-```bash
-cloudone-client/
-├── source/ # Frontend source code
-├── Dockerfile-nginx        # Nginx container configuration
-├── Dockerfile-node         # Node.js development container
-├── default.conf            # Nginx server configuration
-├── docker-compose.yml      # Development environment
-└── docker-compose.prod.yml # Production environment
-```
+![Deployment](docs/architecture/deployment.svg)
 
-## 🔧 Installation & Setup
+Diagrams are PlantUML under `docs/architecture/*.puml`; rendered SVGs are
+checked in. Regenerate with `./scripts/render_diagrams.sh`.
 
-1. Clone the client repository:
-```bash
-git clone https://github.com/tzone85/cloudone-client.git
-cd cloudone-client
-```
-Clone the API repository in a separate directory
-```bash
-git clone https://github.com/tzone85/cloudone.git
-cd cloudone
-```
-
-2. Development Environment Setup:
-```bash
-# Start the client application
-docker-compose up --build
-
-# In a separate terminal, start the API (from the API directory)
-cd ../cloudone
-docker-compose up --build
-```
-
-3. Production Environment:
-```bash
-docker-compose -f docker-compose.prod.yml up --build
-```
-
-## 🌟 Features
-
-### Development Environment
-* Hot-reloading for immediate feedback
-* Volume mounting for real-time code updates
-* Development-specific Nginx configuration
-* Exposed ports for debugging
-
-### Production Environment
-* Multi-stage builds for minimal image size
-* Optimized Nginx configuration
-* Proper cache headers and compression
-* Security-focused settings
-
-## 🔨 Development
-
-### Local Development
+## Quick start
 
 ```bash
-# Start development environment
-docker-compose up
-
-# View logs
-docker-compose logs -f
-
-# Rebuild containers
-docker-compose up --build
+npm install
+npm run dev          # vite dev server on :5173 (uses fixture)
+npm run build        # produces dist/
+npm run preview      # serves dist/ on :4173
+npm test             # vitest + coverage (≥80% lines)
+npm run test:e2e     # playwright vs preview
+npm run lint
 ```
 
-### Making Changes
-1. Edit files in the `source` directory
-2. Changes will automatically reflect in development
-3. Rebuild for production using the production compose file
+Point at a real backend:
 
-## 🚀 Deployment
-
-### Prerequisites
-* Docker Engine 19.03.0+
-* Docker Compose 1.27.0+
-* Available ports 80 and 3000
-
-### Production Deployment Steps
-1. Configure environment variables if needed
-2. Build and start the production stack:
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+VITE_API_BASE=https://api.example npm run dev
 ```
 
-## 🔒 Security Considerations
-* Nginx configured with security best practices
-* Production builds minimize included dependencies
-* Container isolation and proper networking
-* Prepared SSL configuration (needs certificates)
+The backend is expected to provide:
 
-## 🤝 Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+| Method | Path             | Body / response                                                   |
+|--------|------------------|-------------------------------------------------------------------|
+| GET    | `/printers`      | `[{id, printerName, printerIp, status}]`                          |
+| POST   | `/printers`      | body: `{printerName, printerIp, status}` → 200/201 with the item  |
+| PUT    | `/printers/{id}` | body: partial patch → 200 with the item                           |
+| DELETE | `/printers/{id}` | 204                                                               |
 
-## 📝 License
-This project is open source and available under the MIT License.
+## Container
 
-## 📞 Contact
-Project Link: https://github.com/tzone85/cloudone-client
-
-## 🥸 Author
-> This project is created by @tzone85 A.K.A. Thando The Village Boy Mini
-
-## Related Projects
-- [CloudOne API](https://github.com/tzone85/cloudone.git) - The backend API service for this application
+```bash
+docker compose up --build      # nginx serving the SPA on :8080
 ```
 
-This README maintains consistency with the API project while focusing on the client-specific aspects. It provides clear instructions for setting up both the client and API components together, making it easier for new developers to get started with the complete system.
+The Dockerfile is multi-stage (`node:20-alpine` for build, `nginx:1.27-alpine`
+for runtime); nginx is configured with SPA fallback (`try_files`) and gzip.
 
+## Project layout
 
+```
+src/
+├── main.jsx                       # entrypoint
+├── App.jsx                        # composition root
+├── components/
+│   ├── Header.jsx
+│   ├── PrinterTable.jsx           # loading / error / empty / data
+│   ├── PrinterRow.jsx
+│   └── PrinterForm.jsx            # create + edit, client-side validation
+├── services/
+│   ├── printers-api.js            # Mock + Http impls behind one interface
+│   ├── use-printers.js            # React hook with list + mutations
+│   ├── validate-printer.js        # pure IPv4 + name validator
+│   └── …
+├── fixtures/printers.js
+└── styles/main.css
+nginx/default.conf
+Dockerfile
+docker-compose.yml
+.github/workflows/ci.yml
+docs/architecture/                 # PlantUML + SVGs
+```
+
+## Tests
+
+| Suite                                 | Count   | Notes                                                  |
+|---------------------------------------|---------|--------------------------------------------------------|
+| `tests/unit/validate-printer.test.js` | 5       | Pure validator: name, IPv4, trim                       |
+| `tests/unit/printers-api.test.js`     | 11      | Mock + Http impls; 4xx / 5xx / transport branches      |
+| `tests/unit/PrinterForm.test.jsx`     | 4       | Form validation, submit, server-error                  |
+| `tests/unit/PrinterTable.test.jsx`    | 4       | Loading / empty / error+retry / rows + actions         |
+| `tests/e2e/printers-crud.spec.js`     | 2       | Full create → edit → delete flow + IPv4 rejection      |
+| **Total**                             | **26**  | 80% lines / 75% branches gate                          |
+
+## License
+
+MIT — see [LICENSE](LICENSE).
