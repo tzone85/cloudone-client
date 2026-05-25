@@ -1,0 +1,52 @@
+@startuml component
+title Cloud-One Client — Component Architecture
+
+skinparam componentStyle rectangle
+skinparam shadowing false
+
+actor User
+
+package "React 18 SPA" {
+  [App.jsx\n(composition root)] as app
+  [Header] as header
+  [PrinterTable] as table
+  [PrinterRow] as row
+  [PrinterForm\n+ validatePrinter] as form
+  [Drawer (modal-ish)] as drawer
+  [usePrinters hook] as hook
+  [PrintersApi interface] as iface
+  [MockPrintersApi\n(fixture-backed)] as mock
+  [HttpPrintersApi\n(real backend)] as http
+  [PRINTERS_FIXTURE] as fixture
+}
+
+cloud "Printer backend\n(REST /printers)" as backend
+
+User --> app
+app --> header
+app --> table
+app --> form : create / edit modal
+app --> drawer
+table --> row
+app --> hook : usePrinters()
+hook --> iface : list / create / update / remove
+iface <|.. mock
+iface <|.. http
+mock --> fixture
+http --> backend : VITE_API_BASE
+
+note bottom of iface
+  Same shape from every impl:
+  - list()   → {ok, items}
+  - create() → {ok, item}
+  - update() → {ok, item}
+  - remove() → {ok} or {ok:false}
+end note
+
+note right of hook
+  list + invalidate on every
+  successful mutation. Replaces
+  the original pubsub-js
+  ON_REFRESH coupling.
+end note
+@enduml

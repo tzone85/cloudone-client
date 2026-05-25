@@ -1,0 +1,4 @@
+body { font-family: system-ui, -apple-system, sans-serif; background: #f7f8fb; }
+.navbar-brand { font-weight: 700; letter-spacing: 0.5px; }
+.table thead th { font-weight: 600; }
+.btn-close { filter: brightness(0); }

@@ -1,0 +1,31 @@
+@startuml sequence_crud
+title Sequence — create printer
+
+skinparam shadowing false
+
+actor User
+participant "App" as App
+participant "PrinterForm" as Form
+participant "usePrinters" as Hook
+participant "PrintersApi" as API
+participant "Backend or fixture" as Source
+
+User -> App : Click "New printer"
+App -> Form : render (initial = empty)
+User -> Form : type name + IPv4, submit
+Form -> Form : validatePrinter() (client-side)
+alt invalid
+  Form --> User : show field errors, disable submit
+else valid
+  Form -> Hook : create(values)
+  Hook -> API : api.create(values)
+  API -> Source : POST /printers (or push to fixture)
+  Source --> API : {ok, item}
+  API --> Hook : {ok, item}
+  Hook -> API : api.list() (refresh)
+  API -> Source : GET /printers
+  Source --> API : items[]
+  API --> Hook : {ok, items}
+  Hook --> App : items updated, drawer closed
+end
+@enduml
