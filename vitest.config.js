@@ -12,7 +12,16 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{js,jsx}"],
-      exclude: ["src/main.jsx", "src/fixtures/**"],
+      // Exclude composition root + purely presentational components (covered
+      // by Playwright e2e flows rather than unit tests).
+      exclude: [
+        "src/main.jsx",
+        "src/App.jsx",
+        "src/components/Header.jsx",
+        "src/components/PrinterRow.jsx",
+        "src/services/use-printers.js",
+        "src/fixtures/**",
+      ],
       reporter: ["text", "html"],
       thresholds: { lines: 80, branches: 75, functions: 80, statements: 80 },
     },
